@@ -22,6 +22,8 @@ docker build -t oracle-xe:18c .
 
 ## Run Container
 
+_Note it will take a while on first run for the `oracle-xe configure` to complete_
+
 ```bash
 docker run -d \
   --name=oracle-xe \
@@ -54,5 +56,13 @@ docker exec -it oracle-xe bash -c "source /home/oracle/.bashrc; bash"
 
 ### OEM
 
-_Note: Flash is required_
+_Note: Flash is required_</br>
+
 https://localhost:35518/em
+
+
+## Other
+
+Install `emp` and `dept` sample tables:</br>
+
+`@https://raw.githubusercontent.com/OraOpenSource/OXAR/master/oracle/emp_dept.sql`
