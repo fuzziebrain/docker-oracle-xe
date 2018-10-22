@@ -24,12 +24,15 @@ docker build -t oracle-xe:18c .
 
 _Note it will take a while on first run for the `oracle-xe configure` to complete_
 
+`/tmp/apex` is an optional mapping to install APEX
+__
 ```bash
 docker run -d \
   --name=oracle-xe \
   -p 32118:1521 \
   -p 35518:5500 \
   --volume ~/docker/oracle-xe:/opt/oracle/oradata \
+  --volume ~/docker/apex:/tmp/apex \
   oracle-xe:18c
 ```
 
