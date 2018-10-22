@@ -34,6 +34,17 @@ docker run -d \
   --volume ~/docker/oracle-xe:/opt/oracle/oradata \
   --volume ~/docker/apex:/tmp/apex \
   oracle-xe:18c
+
+-- As this takes a long time to run you can keep track of the initial installation by running:
+docker logs oracle-xe
+```
+
+To start and stop the container:
+
+```bash
+docker start oracle-xe
+
+docker stop oracle-xe
 ```
 
 ## Connecting
@@ -53,8 +64,12 @@ sqlcl sys/Oracle18@localhost:32118/XEPDB1 as sysdba
 ### Bash
 
 In some cases you may need to login to the server to modify or test something on the file system.
+
 ```bash
 docker exec -it oracle-xe bash -c "source /home/oracle/.bashrc; bash"
+
+-- Once connected to run sqlplus:
+$ORACLE_HOME/bin/sqlplus sys/Oracle18@localhost/XE as sysdba
 ```
 
 ### OEM
