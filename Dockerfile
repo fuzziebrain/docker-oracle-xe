@@ -1,16 +1,16 @@
 FROM oraclelinux:latest
 LABEL MAINTAINER="Adrian Png <adrian.png@fuzziebrain.com>"
 
-# The only environment variable that should be changed!
-ENV ORACLE_PASSWORD=Oracle1!
-
-# DO NOT CHANGE 
-ENV ORACLE_DOCKER_INSTALL=true \
-    ORACLE_SID=XE \
-    ORACLE_BASE=/opt/oracle \
-    ORACLE_HOME=/opt/oracle/product/18c/dbhomeXE \
-    RUN_FILE=runOracle.sh \
-    EM_REMOTE_ACCESS=enableEmRemoteAccess.sh
+ENV \
+  # The only environment variable that should be changed!
+  ORACLE_PASSWORD=Oracle18 \
+  # DO NOT CHANGE 
+  ORACLE_DOCKER_INSTALL=true \
+  ORACLE_SID=XE \
+  ORACLE_BASE=/opt/oracle \
+  ORACLE_HOME=/opt/oracle/product/18c/dbhomeXE \
+  RUN_FILE=runOracle.sh \
+  EM_REMOTE_ACCESS=enableEmRemoteAccess.sh
     
 
 COPY ./files/*.rpm /tmp/
@@ -21,9 +21,11 @@ RUN yum install -y oracle-database-preinstall-18c && \
 COPY ./scripts/*.sh ${ORACLE_BASE}/scripts/
 
 RUN chmod a+x ${ORACLE_BASE}/scripts/*.sh && \
-    mkdir -p ${ORACLE_BASE}/oradata && \
-    chown oracle.oinstall ${ORACLE_BASE}/oradata
+  mkdir -p ${ORACLE_BASE}/oradata && \
+  chown oracle.oinstall ${ORACLE_BASE}/oradata
 
+# 1521: Oracle listener
+# 5500 Oracle Enterprise Manager (EM) Express listener.
 EXPOSE 1521 5500
 
 VOLUME [ "${ORACLE_BASE}/oradata" ]
