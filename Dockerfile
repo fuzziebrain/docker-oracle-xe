@@ -10,13 +10,15 @@ ENV \
   ORACLE_BASE=/opt/oracle \
   ORACLE_HOME=/opt/oracle/product/18c/dbhomeXE \
   RUN_FILE=runOracle.sh \
-  EM_REMOTE_ACCESS=enableEmRemoteAccess.sh
+  EM_REMOTE_ACCESS=enableEmRemoteAccess.sh \
+  ORACLE_XE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm
     
 
 COPY ./files/*.rpm /tmp/
 
 RUN yum install -y oracle-database-preinstall-18c && \
-  yum install -y /tmp/oracle-database-xe-18c-1.0-1.x86_64.rpm
+  yum install -y /tmp/${ORACLE_XE_RPM} && \
+  rm -rf /tmp/${ORACLE_XE_RPM}
 
 COPY ./scripts/*.sh ${ORACLE_BASE}/scripts/
 
