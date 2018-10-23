@@ -27,11 +27,14 @@ then
   # Enable EM remote access
   runuser oracle -s /bin/bash -c ${ORACLE_BASE}/scripts/${EM_REMOTE_ACCESS}
 else
-  ${ORACLE_CMD} start
-fi
 
-# Tail on alert log and wait (otherwise container will exit)
-echo "The following output is now a tail of the alert.log:"
-tail -f ${ORACLE_BASE}/diag/rdbms/*/*/trace/alert*.log &
-childPID=$!
-wait ${childPID}
+  
+  ${ORACLE_CMD} start
+
+  # Tail on alert log and wait (otherwise container will exit)
+  echo "The following output is now a tail of the alert.log:"
+  tail -f ${ORACLE_BASE}/diag/rdbms/*/*/trace/alert*.log &
+  Stopping for build process
+  childPID=$!
+  wait ${childPID}
+fi

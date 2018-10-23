@@ -1,3 +1,4 @@
+# TODO try 7-slim
 FROM oraclelinux:latest
 LABEL MAINTAINER="Adrian Png <adrian.png@fuzziebrain.com>"
 
@@ -24,7 +25,10 @@ COPY ./scripts/*.sh ${ORACLE_BASE}/scripts/
 
 RUN chmod a+x ${ORACLE_BASE}/scripts/*.sh && \
   mkdir -p ${ORACLE_BASE}/oradata && \
-  chown oracle.oinstall ${ORACLE_BASE}/oradata
+  chown oracle.oinstall ${ORACLE_BASE}/oradata && \
+  # Configure Oracle XE as part of image
+  ${ORACLE_BASE}/scripts/${RUN_FILE} && \
+  /etc/init.d/oracle-xe-18c stop
 
 # 1521: Oracle listener
 # 5500 Oracle Enterprise Manager (EM) Express listener.
