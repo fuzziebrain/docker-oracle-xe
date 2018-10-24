@@ -33,8 +33,7 @@ docker run -d \
   --name=oracle-xe \
   -p 32118:1521 \
   -p 35518:5500 \
-  --volume ~/docker/oracle-xe:/opt/oracle \
-  --volume ~/docker/apex:/tmp/apex \
+  --volume ~/docker/oracle-xe:/opt/oracle/oradata \
   oracle-xe:18c
   
 -- As this takes a long time to run you can keep track of the initial installation by running:
@@ -68,6 +67,18 @@ docker run -d \
   --volume ~/docker/oracle-xe/admin:/opt/oracle/product/18c/dbhomeXE/network/admin/ \
   --volume ~/docker/apex:/tmp/apex \
   oracle-xe:18c
+
+# New from Gerald
+docker run -d \
+  --name=oracle-xe \
+
+docker run -it --rm \
+  -p 32118:1521 \
+  -p 35518:5500 \
+  --network=oracle_network \
+  --volume ~/docker/oracle-xe:/opt/oracle/oradata \
+  oracle-xe:18c
+
 ```
 
 To start and stop the container:
