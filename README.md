@@ -10,6 +10,7 @@
   - [SQL](#sql)
   - [SSH into Container](#ssh-into-container)
   - [OEM](#oem)
+  - [Creating a PDB](#creating-a-pdb)
 - [Other](#other)
 - [Docker Developers](#docker-developers)
 - [Alternate option to preserve Oracle Data (TODO)](#alternate-option-to-preserve-oracle-data-todo)
@@ -121,6 +122,37 @@ _Note: Flash is required_</br>
 
 https://localhost:35518/em
 
+### Creating a PDB
+
+First connect to the CDB as `sysdba`: `sqlcl sys/Oracle18@localhost:32118/XE as sysdba`
+
+```sql
+-- Note XEPDB1 is created by default so demoing with XEPDB2
+create pluggable database xepdb2 admin user pdb_adm identified by Oradoc_db1
+  file_name_convert=('/opt/oracle/oradata/XE/pdbseed','/opt/oracle/oradata/XE/XEPDB2');
+
+-- Running the following query will show the newly created PDBs but they are not open for Read Write:
+select vp.name, vp.open_mode
+from v$pdbs vp;
+
+-- Open the PDB
+alter pluggable database xepdb2 open read write;
+
+-- If nothing is changed the PDBs won't be loaded on boot.
+-- They're a few ways to do this
+-- See for reference https://asktom.oracle.com/pls/asktom/f?p=100:11:0::::P11_QUESTION_ID:9531671900346425939
+-- alter pluggable database pdb_name save state;
+-- alter pluggable database all save state;
+-- alter pluggable database all except pdb$seed open read write
+alter pluggable database all save state;
+```
+
+To connect to the new PDB :
+
+```bash
+# Note: the password is the CDB SYS password, not the pdb_adm admin user
+sqlcl sys/Oracle18@localhost:32118/XEPDB2 as sysdba
+```
 
 ## Other
 
