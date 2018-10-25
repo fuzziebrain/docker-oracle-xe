@@ -15,80 +15,84 @@
 ########### Move DB files ############
 function moveFiles {
 
-   if [ ! -d $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID ]; then
-      mkdir -p $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
-   fi;
+  if [ ! -d $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID ]; then
+    mkdir -p $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
+  fi;
 
-   mv $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
-   mv $ORACLE_HOME/dbs/orapw$ORACLE_SID $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
-   mv $ORACLE_HOME/network/admin/sqlnet.ora $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
-   mv $ORACLE_HOME/network/admin/listener.ora $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
-   mv $ORACLE_HOME/network/admin/tnsnames.ora $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
+  # Replace the container's hostname with 0.0.0.0
+  sed -i 's/'$(hostname)'/0.0.0.0/g' $ORACLE_HOME/network/admin/listener.ora
+  sed -i 's/'$(hostname)'/0.0.0.0/g' $ORACLE_HOME/network/admin/tnsnames.ora
 
-   # oracle user does not have permissions in /etc, hence cp and not mv
-   cp /etc/oratab $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
+  mv $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
+  mv $ORACLE_HOME/dbs/orapw$ORACLE_SID $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
+  mv $ORACLE_HOME/network/admin/sqlnet.ora $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
+  mv $ORACLE_HOME/network/admin/listener.ora $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
+  mv $ORACLE_HOME/network/admin/tnsnames.ora $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
+
+  # oracle user does not have permissions in /etc, hence cp and not mv
+  cp /etc/oratab $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/
    
-   symLinkFiles;
+  symLinkFiles;
 }
 
 ########### Symbolic link DB files ############
 function symLinkFiles {
 
-   if [ ! -L $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora ]; then
-      ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/spfile$ORACLE_SID.ora $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora
-   fi;
+  if [ ! -L $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora ]; then
+    ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/spfile$ORACLE_SID.ora $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora
+  fi;
    
-   if [ ! -L $ORACLE_HOME/dbs/orapw$ORACLE_SID ]; then
-      ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/orapw$ORACLE_SID $ORACLE_HOME/dbs/orapw$ORACLE_SID
-   fi;
+  if [ ! -L $ORACLE_HOME/dbs/orapw$ORACLE_SID ]; then
+    ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/orapw$ORACLE_SID $ORACLE_HOME/dbs/orapw$ORACLE_SID
+  fi;
    
-   if [ ! -L $ORACLE_HOME/network/admin/sqlnet.ora ]; then
-      ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/sqlnet.ora $ORACLE_HOME/network/admin/sqlnet.ora
-   fi;
+  if [ ! -L $ORACLE_HOME/network/admin/sqlnet.ora ]; then
+    ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/sqlnet.ora $ORACLE_HOME/network/admin/sqlnet.ora
+  fi;
 
-   if [ ! -L $ORACLE_HOME/network/admin/listener.ora ]; then
-      ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/listener.ora $ORACLE_HOME/network/admin/listener.ora
-   fi;
+  if [ ! -L $ORACLE_HOME/network/admin/listener.ora ]; then
+    ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/listener.ora $ORACLE_HOME/network/admin/listener.ora
+  fi;
 
-   if [ ! -L $ORACLE_HOME/network/admin/tnsnames.ora ]; then
-      ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/tnsnames.ora $ORACLE_HOME/network/admin/tnsnames.ora
-   fi;
+  if [ ! -L $ORACLE_HOME/network/admin/tnsnames.ora ]; then
+    ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/tnsnames.ora $ORACLE_HOME/network/admin/tnsnames.ora
+  fi;
 
-   # oracle user does not have permissions in /etc, hence cp and not ln 
-   cp $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/oratab /etc/oratab
+  # oracle user does not have permissions in /etc, hence cp and not ln 
+  cp $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/oratab /etc/oratab
 
 }
 
 ########### SIGINT handler ############
 function _int() {
-   echo "Stopping container."
-   echo "SIGINT received, shutting down database!"
-   $ORACLE_HOME/bin/sqlplus / as sysdba <<EOF
-   shutdown immediate;
-   exit;
+  echo "Stopping container."
+  echo "SIGINT received, shutting down database!"
+  $ORACLE_HOME/bin/sqlplus / as sysdba <<EOF
+  shutdown immediate;
+  exit;
 EOF
-   $ORACLE_HOME/bin/lsnrctl stop
+  $ORACLE_HOME/bin/lsnrctl stop
 }
 
 ########### SIGTERM handler ############
 function _term() {
-   echo "Stopping container."
-   echo "SIGTERM received, shutting down database!"
-   $ORACLE_HOME/bin/sqlplus / as sysdba <<EOF
-   shutdown immediate;
-   exit;
+  echo "Stopping container."
+  echo "SIGTERM received, shutting down database!"
+  $ORACLE_HOME/bin/sqlplus / as sysdba <<EOF
+  shutdown immediate;
+  exit;
 EOF
-   $ORACLE_HOME/bin/lsnrctl stop
+  $ORACLE_HOME/bin/lsnrctl stop
 }
 
 ########### SIGKILL handler ############
 function _kill() {
-   echo "SIGKILL received, shutting down database!"
-   $ORACLE_HOME/bin/sqlplus / as sysdba <<EOF
-   shutdown abort;
-   exit;
+  echo "SIGKILL received, shutting down database!"
+  $ORACLE_HOME/bin/sqlplus / as sysdba <<EOF
+  shutdown abort;
+  exit;
 EOF
-   $ORACLE_HOME/bin/lsnrctl stop
+  $ORACLE_HOME/bin/lsnrctl stop
 }
 
 ###################################
@@ -101,12 +105,12 @@ EOF
 # Github issue #219: Prevent integer overflow,
 # only check if memory digits are less than 11 (single GB range and below) 
 if [ `cat /sys/fs/cgroup/memory/memory.limit_in_bytes | wc -c` -lt 11 ]; then
-   if [ `cat /sys/fs/cgroup/memory/memory.limit_in_bytes` -lt 2147483648 ]; then
-      echo "Error: The container doesn't have enough memory allocated."
-      echo "A database container needs at least 2 GB of memory."
-      echo "You currently only have $((`cat /sys/fs/cgroup/memory/memory.limit_in_bytes`/1024/1024/1024)) GB allocated to the container."
-      exit 1;
-   fi;
+  if [ `cat /sys/fs/cgroup/memory/memory.limit_in_bytes` -lt 2147483648 ]; then
+    echo "Error: The container doesn't have enough memory allocated."
+    echo "A database container needs at least 2 GB of memory."
+    echo "You currently only have $((`cat /sys/fs/cgroup/memory/memory.limit_in_bytes`/1024/1024/1024)) GB allocated to the container."
+    exit 1;
+  fi;
 fi;
 
 # Set SIGINT handler
@@ -129,6 +133,7 @@ if [ -d $ORACLE_BASE/oradata/$ORACLE_SID ]; then
   # Make sure audit file destination exists
   if [ ! -d $ORACLE_BASE/admin/$ORACLE_SID/adump ]; then
     mkdir -p $ORACLE_BASE/admin/$ORACLE_SID/adump
+    chown oracle.oinstall $ORACLE_BASE/admin/$ORACLE_SID/adump
   fi;
    
   # Start database
@@ -136,6 +141,10 @@ if [ -d $ORACLE_BASE/oradata/$ORACLE_SID ]; then
    
 else
   echo Database does not exists, configuring
+ 
+  mkdir -p ${ORACLE_BASE}/oradata
+  chown oracle.oinstall ${ORACLE_BASE}/oradata
+
   ${ORACLE_CMD} configure
 
   # Enable EM remote access

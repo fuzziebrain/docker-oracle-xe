@@ -25,10 +25,7 @@ RUN echo TODO delete 03
 
 COPY ./scripts/*.sh ${ORACLE_BASE}/scripts/
 
-RUN chmod a+x ${ORACLE_BASE}/scripts/*.sh && \
-  mkdir -p ${ORACLE_BASE}/oradata && \
-  chown oracle.oinstall ${ORACLE_BASE}/oradata
-
+RUN chmod a+x ${ORACLE_BASE}/scripts/*.sh 
 
 # 1521: Oracle listener
 # 5500 Oracle Enterprise Manager (EM) Express listener.
