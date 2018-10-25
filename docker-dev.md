@@ -13,3 +13,8 @@ docker run -it --rm \
   --volume ~/docker/oracle-xe:/opt/oracle/oradata \
   oracle-xe:18c
 ```
+
+
+## Documentation
+
+The TOC on the main [README.md](README.md) uses [Markdown TOC](https://marketplace.visualstudio.com/items?itemName=AlanWalk.markdown-toc) for VS Code.
