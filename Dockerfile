@@ -14,7 +14,7 @@ ENV \
   ORACLE_XE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm \
   CHECK_DB_FILE=checkDBStatus.sh
     
-COPY ./files/*.rpm /tmp/
+COPY ./files/${ORACLE_XE_RPM} /tmp/
 
 RUN yum install -y oracle-database-preinstall-18c && \
   yum install -y /tmp/${ORACLE_XE_RPM} && \
