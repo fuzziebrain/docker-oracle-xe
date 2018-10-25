@@ -22,7 +22,7 @@
 
 1. _Optional:_ Setup docker network: `docker network create oracle_network`. This is useful if you want other containers to connect to your database (ORDS for example). You can change `oracle_network` for any name you want, however this name will be used in all the code snippets below. 
 
-1. _Optional:_ Create a folder called `mkdir ~/docker/oracle-xe` which will store your Oracle XE data to be preserved after the container is destroyed.
+1. _Optional:_ Create a folder `mkdir ~/docker/oracle-xe` which will store your Oracle XE data to be preserved after the container is destroyed.
 
 ## Build Image
 
