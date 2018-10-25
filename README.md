@@ -13,7 +13,7 @@
   - [Creating a PDB](#creating-a-pdb)
 - [Other](#other)
 - [Docker Developers](#docker-developers)
-- [Alternate option to preserve Oracle Data (TODO)](#alternate-option-to-preserve-oracle-data-todo)
+- [Alternate option to preserve Oracle Data](#alternate-option-to-preserve-oracle-data)
 
 <!-- /TOC -->
 
@@ -165,7 +165,9 @@ Install `emp` and `dept` sample tables:</br>
 If you're interested in helping maintain this project check out [docker-dev](docker-dev.md) document.
 
 
-## Alternate option to preserve Oracle Data (TODO)
+## Alternate option to preserve Oracle Data
+
+THIS IS NOT COMPLETE
 
 ```bash
 # docker run -it --rm \
