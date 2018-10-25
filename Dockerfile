@@ -1,4 +1,4 @@
-FROM oraclelinux:latest
+FROM oraclelinux:7-slim
 LABEL MAINTAINER="Adrian Png <adrian.png@fuzziebrain.com>"
 
 ENV \
