@@ -179,6 +179,7 @@ docker logs oracle-xe-seed
 
 # Once the Database is fully configured (you'll see a message like:)
 # "The following output is now a tail of the alert.log:"
+# Running docker ps oracle-xe-seed should also show status "(healthy)'
 # Copy the oradata files tso a location (ex: ~/docker/oracle-xe)
 # Note you'll probably want to store this in a shared NAS etc
 docker cp oracle-xe-seed:/opt/oracle/oradata ~/docker/oracle-xe-seed
