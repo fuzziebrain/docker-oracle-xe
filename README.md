@@ -13,7 +13,7 @@
   - [Creating a PDB](#creating-a-pdb)
 - [Other](#other)
 - [Docker Developers](#docker-developers)
-- [Alternate option to preserve Oracle Data](#alternate-option-to-preserve-oracle-data)
+- [Preserving `/opt/oracle/oradata` for Multiple Copies](#preserving-optoracleoradata-for-multiple-copies)
 
 <!-- /TOC -->
 
@@ -165,52 +165,55 @@ Install `emp` and `dept` sample tables:</br>
 If you're interested in helping maintain this project check out [docker-dev](docker-dev.md) document.
 
 
-## Alternate option to preserve Oracle Data
+## Preserving `/opt/oracle/oradata` for Multiple Copies
 
-THIS IS NOT COMPLETE
+Each time you start a container that does has an empty `/opt/oracle/oradata` Oracle XE is configured and the data files are created for the CDB and one PDB (`XEPDB1`). If you plan to launch multiple separate containers for Oracle XE, it is unnecessary to spend this time waiting for the same base files to be created. The solution is fairly simple. It involves creating a sample/seed container, extracting the data files, then copying those data files each time you launch a new container for a new instance of Oracle XE. The following commands demonstrates how to do this:
 
 ```bash
-# docker run -it --rm \
-
 docker run -d \
-  --name=oracle-xe \
+  --name=oracle-xe-seed \
   oracle-xe:18c
 
-docker stop oracle-xe
+# Monitor the status:
+docker logs oracle-xe-seed
 
-docker cp oracle-xe:/opt/oracle/oradata ~/docker/oracle-xe
-docker cp oracle-xe:/opt/oracle/product/18c/dbhomeXE/network/admin/ ~/docker/oracle-xe
+# Once the Database is fully configured (you'll see a message like:)
+# "The following output is now a tail of the alert.log:"
+# Copy the oradata files tso a location (ex: ~/docker/oracle-xe)
+# Note you'll probably want to store this in a shared NAS etc
+docker cp oracle-xe-seed:/opt/oracle/oradata ~/docker/oracle-xe-seed
 
-docker rm oracle-xe
-
-# New container
-docker run -d \
-  --name=oracle-xe \
-  -p 32118:1521 \
-  -p 35518:5500 \
-  --network=oracle_network \
-  --volume ~/docker/oracle-xe/oradata:/opt/oracle/oradata \
-  --volume ~/docker/oracle-xe/admin:/opt/oracle/product/18c/dbhomeXE/network/admin/ \
-  --volume ~/docker/apex:/tmp/apex \
-  oracle-xe:18c
-
-# New from Gerald
-docker run -d \
-  --name=oracle-xe \
-
-docker run -it --rm \
-  -p 32118:1521 \
-  -p 35518:5500 \
-  --network=oracle_network \
-  --volume ~/docker/oracle-xe:/opt/oracle/oradata \
-  oracle-xe:18c
-
+# You no longer need the container so stop and remove it
+docker stop oracle-xe-seed
+docker rm oracle-xe-seed
 ```
 
-To start and stop the container:
+Each time you create a new instance of XE, copy the base `oradata` files and mount them as volume. The following examples shows how to create two copies of Oracle XE:
 
 ```bash
-docker start oracle-xe
+# Copy the data files for 01 and 02
+cp  ~/docker/oracle-xe-seed ~/docker/oracle-xe01
+cp  ~/docker/oracle-xe-seed ~/docker/oracle-xe02
 
-docker stop oracle-xe
+# Start new containers
+docker run -d \
+  --name=oracle-xe01 \
+  -p 32181:1521 \
+  --network=oracle_network \
+  --volume ~/docker/oracle-xe01:/opt/oracle/oradata \
+  oracle-xe:18c
+
+docker run -d \
+  --name=oracle-xe02 \
+  -p 32182:1521 \
+  --network=oracle_network \
+  --volume ~/docker/oracle-xe02:/opt/oracle/oradata \
+  oracle-xe:18c
+
+# You should see both containers running now:
+docker ps
+
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                            PORTS                               NAMES
+69b52a37a1c6        oracle-xe:18c       "/bin/sh -c 'exec ${…"   8 minutes ago       Up 8 minutes (health: starting)   5500/tcp, 0.0.0.0:32182->1521/tcp   oracle-xe02
+14eea4c699d3        oracle-xe:18c       "/bin/sh -c 'exec ${…"   9 minutes ago       Up 9 minutes (health: starting)   5500/tcp, 0.0.0.0:32181->1521/tcp   oracle-xe01
 ```
