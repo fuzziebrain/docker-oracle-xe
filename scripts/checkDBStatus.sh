@@ -20,7 +20,7 @@ ORAENV_ASK=NO
 source oraenv
 
 # Check Oracle DB status and store it in status
-status=`$ORACLE_HOME/bin/sqlplus -s / as sysdba << EOF
+status=`su oracle -c '$ORACLE_HOME/bin/sqlplus -s / as sysdba' << EOF
    set heading off;
    set pagesize 0;
    SELECT open_mode FROM v\\$pdbs WHERE name COLLATE BINARY_CI = '$ORACLE_PDB';

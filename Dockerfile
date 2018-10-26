@@ -33,7 +33,7 @@ EXPOSE 1521 5500
 
 VOLUME [ "${ORACLE_BASE}/oradata" ]
 
-HEALTHCHECK --interval=1m --start-period=10m \
-  CMD "$ORACLE_BASE/$CHECK_DB_FILE" >/dev/null || exit 1
+HEALTHCHECK --interval=1m --start-period=2m --retries=8 \
+  CMD "$ORACLE_BASE/scripts/$CHECK_DB_FILE"
 
 CMD exec ${ORACLE_BASE}/scripts/${RUN_FILE}
