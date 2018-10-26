@@ -67,32 +67,20 @@ function symLinkFiles {
 function _int() {
   echo "Stopping container."
   echo "SIGINT received, shutting down database!"
-  $ORACLE_HOME/bin/sqlplus / as sysdba <<EOF
-  shutdown immediate;
-  exit;
-EOF
-  $ORACLE_HOME/bin/lsnrctl stop
+  runuser oracle -s /bin/bash -c "${ORACLE_BASE}/scripts/${SHUTDOWN_FILE} immediate"
 }
 
 ########### SIGTERM handler ############
 function _term() {
   echo "Stopping container."
   echo "SIGTERM received, shutting down database!"
-  $ORACLE_HOME/bin/sqlplus / as sysdba <<EOF
-  shutdown immediate;
-  exit;
-EOF
-  $ORACLE_HOME/bin/lsnrctl stop
+  runuser oracle -s /bin/bash -c "${ORACLE_BASE}/scripts/${SHUTDOWN_FILE} immediate"
 }
 
 ########### SIGKILL handler ############
 function _kill() {
   echo "SIGKILL received, shutting down database!"
-  $ORACLE_HOME/bin/sqlplus / as sysdba <<EOF
-  shutdown abort;
-  exit;
-EOF
-  $ORACLE_HOME/bin/lsnrctl stop
+  runuser oracle -s /bin/bash -c "${ORACLE_BASE}/scripts/${SHUTDOWN_FILE} abort"
 }
 
 ###################################
@@ -128,17 +116,18 @@ ORACLE_CMD=/etc/init.d/oracle-xe-18c
 # Check whether database already exists
 if [ -d $ORACLE_BASE/oradata/$ORACLE_SID ]; then
   echo Database exists
-  symLinkFiles;
    
   # Make sure audit file destination exists
   if [ ! -d $ORACLE_BASE/admin/$ORACLE_SID/adump ]; then
     mkdir -p $ORACLE_BASE/admin/$ORACLE_SID/adump
-    chown oracle.oinstall $ORACLE_BASE/admin/$ORACLE_SID/adump
+    chown -R oracle.oinstall $ORACLE_BASE/admin
   fi;
+  
+  symLinkFiles;
    
   # Start database
   ${ORACLE_CMD} start
-   
+  
 else
   echo Database does not exists, configuring
  

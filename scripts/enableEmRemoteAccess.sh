@@ -1,9 +1,8 @@
 #!/bin/bash
 
-export ORACLE_SID=XE
-export ORAENV_ASK=NO
-. /opt/oracle/product/18c/dbhomeXE/bin/oraenv
+. oraenv 
 
+echo "Enabling XDB for external access"
 sqlplus / as sysdba << EOF
-  exec dbms_xdb.setlistenerlocalaccess(false);
+  exec dbms_xdb_config.setlistenerlocalaccess(false);
 EOF

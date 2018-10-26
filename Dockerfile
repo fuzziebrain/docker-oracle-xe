@@ -9,8 +9,11 @@ ENV \
   ORACLE_SID=XE \
   ORACLE_BASE=/opt/oracle \
   ORACLE_HOME=/opt/oracle/product/18c/dbhomeXE \
+  ORAENV_ASK=NO \
   RUN_FILE=runOracle.sh \
+  SHUTDOWN_FILE=shutdownDb.sh \
   EM_REMOTE_ACCESS=enableEmRemoteAccess.sh \
+  EM_RESTORE=reconfigureEm.sh \
   ORACLE_XE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm \
   CHECK_DB_FILE=checkDBStatus.sh
     
