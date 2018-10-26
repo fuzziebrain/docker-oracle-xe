@@ -1,4 +1,4 @@
-FROM oraclelinux:latest
+FROM oraclelinux:7-slim
 LABEL MAINTAINER="Adrian Png <adrian.png@fuzziebrain.com>"
 
 ENV \
@@ -14,21 +14,18 @@ ENV \
   ORACLE_XE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm \
   CHECK_DB_FILE=checkDBStatus.sh
     
-
-COPY ./files/*.rpm /tmp/
+COPY ./files/${ORACLE_XE_RPM} /tmp/
 
 RUN yum install -y oracle-database-preinstall-18c && \
   yum install -y /tmp/${ORACLE_XE_RPM} && \
   rm -rf /tmp/${ORACLE_XE_RPM}
-
-RUN echo TODO delete 03
 
 COPY ./scripts/*.sh ${ORACLE_BASE}/scripts/
 
 RUN chmod a+x ${ORACLE_BASE}/scripts/*.sh 
 
 # 1521: Oracle listener
-# 5500 Oracle Enterprise Manager (EM) Express listener.
+# 5500: Oracle Enterprise Manager (EM) Express listener.
 EXPOSE 1521 5500
 
 VOLUME [ "${ORACLE_BASE}/oradata" ]
