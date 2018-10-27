@@ -6,14 +6,15 @@
 - [Build Image](#build-image)
 - [Run Container](#run-container)
 - [Container Commands](#container-commands)
-- [Connecting](#connecting)
+- [Other](#other)
   - [SQL](#sql)
+  - [APEX Install](#apex-install)
   - [SSH into Container](#ssh-into-container)
   - [OEM](#oem)
   - [Creating a PDB](#creating-a-pdb)
-- [Other](#other)
+  - [`emp` and `dept` tables](#emp-and-dept-tables)
+  - [Preserving `/opt/oracle/oradata` for Multiple Copies](#preserving-optoracleoradata-for-multiple-copies)
 - [Docker Developers](#docker-developers)
-- [Preserving `/opt/oracle/oradata` for Multiple Copies](#preserving-optoracleoradata-for-multiple-copies)
 
 <!-- /TOC -->
 
@@ -83,7 +84,7 @@ docker start oracle-xe
 docker stop -t 200 oracle-xe
 ```
 
-## Connecting
+## Other
 
 ### SQL
 
@@ -96,8 +97,11 @@ sqlcl sys/Oracle18@localhost:32118/XE as sysdba
 
 -- Connect to default PDB
 sqlcl sys/Oracle18@localhost:32118/XEPDB1 as sysdba
-
 ```
+
+### APEX Install
+
+An example to install APEX into the default container is available [here](docs/apex-install.md).
 
 ### SSH into Container
 
@@ -154,18 +158,14 @@ To connect to the new PDB :
 sqlcl sys/Oracle18@localhost:32118/XEPDB2 as sysdba
 ```
 
-## Other
+### `emp` and `dept` tables
 
 Install `emp` and `dept` sample tables:</br>
 
 `@https://raw.githubusercontent.com/OraOpenSource/OXAR/master/oracle/emp_dept.sql`
 
-## Docker Developers
 
-If you're interested in helping maintain this project check out [docker-dev](docs/docker-dev.md) document.
-
-
-## Preserving `/opt/oracle/oradata` for Multiple Copies
+### Preserving `/opt/oracle/oradata` for Multiple Copies
 
 Each time you start a container that does has an empty `/opt/oracle/oradata` Oracle XE is configured and the data files are created for the CDB and one PDB (`XEPDB1`). If you plan to launch multiple separate containers for Oracle XE, it is unnecessary to spend this time waiting for the same base files to be created. The solution is fairly simple. It involves creating a sample/seed container, extracting the data files, then copying those data files each time you launch a new container for a new instance of Oracle XE. The following commands demonstrates how to do this:
 
@@ -218,3 +218,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 69b52a37a1c6        oracle-xe:18c       "/bin/sh -c 'exec ${…"   8 minutes ago       Up 8 minutes (health: starting)   5500/tcp, 0.0.0.0:32182->1521/tcp   oracle-xe02
 14eea4c699d3        oracle-xe:18c       "/bin/sh -c 'exec ${…"   9 minutes ago       Up 9 minutes (health: starting)   5500/tcp, 0.0.0.0:32181->1521/tcp   oracle-xe01
 ```
+
+## Docker Developers
+
+If you're interested in helping maintain this project check out [docker-dev](docs/docker-dev.md) document.

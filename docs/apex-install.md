@@ -1,8 +1,17 @@
 # How to Install APEX in PDB
 
+<!-- TOC -->
+
+- [How to Install APEX in PDB](#how-to-install-apex-in-pdb)
+  - [Assumptions](#assumptions)
+  - [APEX Installation](#apex-installation)
+  - [ORDS](#ords)
+
+<!-- /TOC -->
+
 This documentation will walk through how to create a new PDB and install it. Please ensure that you have [downloaded](https://www.oracle.com/technetwork/developer-tools/apex/downloads/index.html) the latest copy of APEX.
 
-Assumptions:
+## Assumptions
 
 Item | Description
 --- | ---
@@ -10,6 +19,9 @@ Container Name | Container name is `oracle-xe`
 APEX Version | `18.2`. The zip file is located in: 
 PDB | `XEPDB1` (_default PDB that comes with XE_)
 APEX Admin Password: `Oradoc_db1`
+
+
+## APEX Installation
 
 ```bash
 # Copy APEX zip file to container
@@ -35,3 +47,7 @@ rm -rf apex*
 
 exit
 ```
+
+## ORDS
+
+[docker-ords](https://github.com/martindsouza/docker-ords) contains instructions on how to setup a docker instance of ORDS
