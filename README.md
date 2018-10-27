@@ -162,7 +162,7 @@ Install `emp` and `dept` sample tables:</br>
 
 ## Docker Developers
 
-If you're interested in helping maintain this project check out [docker-dev](docker-dev.md) document.
+If you're interested in helping maintain this project check out [docker-dev](docs/docker-dev.md) document.
 
 
 ## Preserving `/opt/oracle/oradata` for Multiple Copies
