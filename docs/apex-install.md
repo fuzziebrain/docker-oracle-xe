@@ -36,7 +36,7 @@ unzip apex_18.2_en.zip
 cd apex
 
 # Download APEX install file
-curl https://raw.githubusercontent.com/fuzziebrain/docker-oracle-xe/files/apex-install.sql --output apex-install.sql
+curl https://raw.githubusercontent.com/fuzziebrain/docker-oracle-xe/master/files/apex-install.sql --output apex-install.sql
 
 # Connect to PDB and install APEX
 $ORACLE_HOME/bin/sqlplus sys/Oracle18@localhost/XEPDB1 as sysdba @apex-install.sql Oradoc_db1
