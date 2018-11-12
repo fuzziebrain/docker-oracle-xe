@@ -29,10 +29,10 @@ end;
 @apexins.sql SYSAUX SYSAUX TEMP /i/
 
 -- APEX REST configuration
-@apex_rest_config_core.sql oracle oracle
+@apex_rest_config_core.sql Oracle18 Oracle18
 
 -- Required for ORDS install
-alter user apex_public_user identified by oracle account unlock;
+alter user apex_public_user identified by Oracle18 account unlock;
 
 -- From Joels blog: http://joelkallman.blogspot.ca/2017/05/apex-and-ords-up-and-running-in2-steps.html
 declare
