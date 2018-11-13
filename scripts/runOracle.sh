@@ -39,23 +39,28 @@ function moveFiles {
 function symLinkFiles {
 
   if [ ! -L $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora ]; then
-    ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/spfile$ORACLE_SID.ora $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora
+    cp $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/spfile$ORACLE_SID.ora $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora
+    chown oracle:oinstall $ORACLE_HOME/dbs/spfile$ORACLE_SID.ora
   fi;
    
   if [ ! -L $ORACLE_HOME/dbs/orapw$ORACLE_SID ]; then
-    ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/orapw$ORACLE_SID $ORACLE_HOME/dbs/orapw$ORACLE_SID
+    cp $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/orapw$ORACLE_SID $ORACLE_HOME/dbs/orapw$ORACLE_SID
+    chown oracle:oinstall $ORACLE_HOME/dbs/orapw$ORACLE_SID
   fi;
    
   if [ ! -L $ORACLE_HOME/network/admin/sqlnet.ora ]; then
-    ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/sqlnet.ora $ORACLE_HOME/network/admin/sqlnet.ora
+    cp $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/sqlnet.ora $ORACLE_HOME/network/admin/sqlnet.ora
+    chown oracle:oinstall $ORACLE_HOME/network/admin/sqlnet.ora
   fi;
 
   if [ ! -L $ORACLE_HOME/network/admin/listener.ora ]; then
-    ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/listener.ora $ORACLE_HOME/network/admin/listener.ora
+    cp $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/listener.ora $ORACLE_HOME/network/admin/listener.ora
+    chown oracle:oinstall $ORACLE_HOME/network/admin/listener.ora
   fi;
 
   if [ ! -L $ORACLE_HOME/network/admin/tnsnames.ora ]; then
-    ln -s $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/tnsnames.ora $ORACLE_HOME/network/admin/tnsnames.ora
+    cp $ORACLE_BASE/oradata/dbconfig/$ORACLE_SID/tnsnames.ora $ORACLE_HOME/network/admin/tnsnames.ora
+    chown oracle:oinstall $ORACLE_HOME/network/admin/tnsnames.ora
   fi;
 
   # oracle user does not have permissions in /etc, hence cp and not ln 
