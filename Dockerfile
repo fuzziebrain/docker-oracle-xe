@@ -4,6 +4,7 @@ LABEL MAINTAINER="Adrian Png <adrian.png@fuzziebrain.com>"
 ENV \
   # The only environment variable that should be changed!
   ORACLE_PASSWORD=Oracle18 \
+  EM_GLOBAL_ACCESS_YN=Y \
   # DO NOT CHANGE 
   ORACLE_DOCKER_INSTALL=true \
   ORACLE_SID=XE \
