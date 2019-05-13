@@ -3,8 +3,10 @@
 <!-- TOC depthFrom:2 -->
 
 - [Prerequisites](#prerequisites)
-- [Build Image](#build-image)
-- [Run Container](#run-container)
+- [Setup with Docker Compose](#setup-with-docker-compose)
+- [Manual Setup](#manual-setup)
+	- [Build Image](#build-image)
+	- [Run Container](#run-container)
 - [Container Commands](#container-commands)
 - [Other](#other)
   - [SQL](#sql)
@@ -20,13 +22,39 @@
 
 ## Prerequisites
 
-1. [Download](https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html) the RPM from Oracle Technology Network and save to folder. We will assume it is in `~/Downloads/oracle-database-xe-18c-1.0-1.x86_64.rpm`.
+1. [Download](https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html) the RPM from Oracle Technology Network and save to folder. We will assume it is in `~/Downloads/oracle-database-xe-VERSION.rpm`.
 
-1. _Optional:_ Setup docker network: `docker network create oracle_network`. This is useful if you want other containers to connect to your database (ORDS for example). You can change `oracle_network` for any name you want, however this name will be used in all the code snippets below. 
+The following steps are not necessary if you use the [docker-compose setup method](#setup-with-docker-compose):
+
+1. _Optional:_ Setup docker network: `docker network create oracle_network`. This is useful if you want other containers to connect to your database (ORDS for example). You can change `oracle_network` for any name you want, however this name will be used in all the code snippets below.
 
 1. _Optional:_ Create a folder `mkdir ~/docker/oracle-xe` which will store your Oracle XE data to be preserved after the container is destroyed.
 
-## Build Image
+## Setup With Docker Compose
+
+*Note*: Use this setup method or the [manual one](#manual-setup) not both.
+
+```bash
+-- Clone repo
+git clone git@github.com:fuzziebrain/docker-oracle-xe.git
+
+-- Set the working directory to the project folder
+cd docker-oracle-xe
+
+-- Copy the RPMs to docker-odb18c-xe/files
+cp ~/Downloads/oracle-database-xe-*.rpm files/
+-- Build Image
+docker-compose build
+
+-- Run Container
+docker-compose up
+```
+
+## Manual Setup
+
+*Note*: Use this setup method or the [Docker Compose one](#setup-with-docker-compose) not both.
+
+### Build Image
 
 ```bash
 -- Clone repo
@@ -42,7 +70,7 @@ cp ~/Downloads/oracle-database-xe-18c-1.0-1.x86_64.rpm files/
 docker build -t oracle-xe:18c .
 ```
 
-## Run Container
+### Run Container
 
 _Note first time will take a a while to run for as the `oracle-xe configure` script needs to complete_
 
