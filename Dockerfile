@@ -15,14 +15,13 @@ ENV \
   SHUTDOWN_FILE=shutdownDb.sh \
   EM_REMOTE_ACCESS=enableEmRemoteAccess.sh \
   EM_RESTORE=reconfigureEm.sh \
-  ORACLE_XE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm \
   CHECK_DB_FILE=checkDBStatus.sh
-    
-COPY ./files/${ORACLE_XE_RPM} /tmp/
+
+COPY ./files/ /tmp/
 
 RUN yum install -y oracle-database-preinstall-18c && \
-  yum install -y /tmp/${ORACLE_XE_RPM} && \
-  rm -rf /tmp/${ORACLE_XE_RPM}
+  yum localinstall -y /tmp/oracle-database-xe-18c-*.rpm && \
+  rm -rf /tmp/oracle-*
 
 COPY ./scripts/*.sh ${ORACLE_BASE}/scripts/
 
