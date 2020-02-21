@@ -1,6 +1,9 @@
 FROM oraclelinux:7-slim
 LABEL MAINTAINER="Adrian Png <adrian.png@fuzziebrain.com>"
 
+ARG ORACLE_XE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm
+ARG ORACLE_XE_URL=https://download.oracle.com/otn-pub/otn_software/db-express/${ORACLE_XE_RPM}
+
 ENV \
   # The only environment variable that should be changed!
   ORACLE_PASSWORD=Oracle18 \
@@ -15,14 +18,16 @@ ENV \
   SHUTDOWN_FILE=shutdownDb.sh \
   EM_REMOTE_ACCESS=enableEmRemoteAccess.sh \
   EM_RESTORE=reconfigureEm.sh \
-  ORACLE_XE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm \
   CHECK_DB_FILE=checkDBStatus.sh
     
-COPY ./files/${ORACLE_XE_RPM} /tmp/
+# Download Oracle XE
+ADD ${ORACLE_XE_URL} /tmp
 
-RUN yum install -y oracle-database-preinstall-18c && \
+RUN echo start && \
+  yum install -y oracle-database-preinstall-18c && \
   yum install -y /tmp/${ORACLE_XE_RPM} && \
-  rm -rf /tmp/${ORACLE_XE_RPM}
+  rm -rf /tmp/${ORACLE_XE_RPM} && \
+  echo end
 
 COPY ./scripts/*.sh ${ORACLE_BASE}/scripts/
 
