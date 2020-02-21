@@ -1,9 +1,6 @@
 # Docker build for Oracle Database 18c Express Edition (XE)
 
-<!-- TOC depthFrom:2 -->
-
 - [Prerequisites](#prerequisites)
-- [Build Image](#build-image)
 - [Run Container](#run-container)
 - [Container Commands](#container-commands)
 - [Other](#other)
@@ -16,31 +13,12 @@
   - [Preserving `/opt/oracle/oradata` for Multiple Copies](#preserving-optoracleoradata-for-multiple-copies)
 - [Docker Developers](#docker-developers)
 
-<!-- /TOC -->
-
 ## Prerequisites
-
-1. [Download](https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html) the RPM from Oracle Technology Network and save to folder. We will assume it is in `~/Downloads/oracle-database-xe-18c-1.0-1.x86_64.rpm`.
 
 1. _Optional:_ Setup docker network: `docker network create oracle_network`. This is useful if you want other containers to connect to your database (ORDS for example). You can change `oracle_network` for any name you want, however this name will be used in all the code snippets below. 
 
 1. _Optional:_ Create a folder `mkdir ~/docker/oracle-xe` which will store your Oracle XE data to be preserved after the container is destroyed.
 
-## Build Image
-
-```bash
--- Clone repo
-git clone git@github.com:fuzziebrain/docker-oracle-xe.git
-
--- Set the working directory to the project folder
-cd docker-oracle-xe
-
--- Copy the RPM to docker-odb18c-xe/files
-cp ~/Downloads/oracle-database-xe-18c-1.0-1.x86_64.rpm files/
-
--- Build Image
-docker build -t oracle-xe:18c .
-```
 
 ## Run Container
 
@@ -49,12 +27,14 @@ _Note first time will take a a while to run for as the `oracle-xe configure` scr
 ```bash
 docker run -d \
   -p 32118:1521 \
-  -p 35518:5500 \
   --name=oracle-xe \
   --volume ~/docker/oracle-xe:/opt/oracle/oradata \
   --network=oracle_network \
-  oracle-xe:18c
+  martindsouza/oracle-xe:18c
   
+# Optional add the following for EM
+# -p 35518:5500 \
+
 # As this takes a long time to run you can keep track of the initial installation by running:
 docker logs oracle-xe
 ```
@@ -140,7 +120,7 @@ select vp.name, vp.open_mode
 from v$pdbs vp;
 
 -- Open the PDB
-alter pluggable database xepdb2 open read write;
+alter pluggable database xepdb1 open read write;
 
 -- If nothing is changed the PDBs won't be loaded on boot.
 -- They're a few ways to do this
@@ -219,6 +199,6 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 14eea4c699d3        oracle-xe:18c       "/bin/sh -c 'exec ${…"   9 minutes ago       Up 9 minutes (health: starting)   5500/tcp, 0.0.0.0:32181->1521/tcp   oracle-xe01
 ```
 
-## Docker Developers
+##  Docker Developers
 
 If you're interested in helping maintain this project check out [docker-dev](docs/docker-dev.md) document.
