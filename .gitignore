@@ -83,4 +83,7 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/osx,macos,linux,windows
 
+# Files
 *.rpm
+*.zip
+tmp
