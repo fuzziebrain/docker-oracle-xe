@@ -1,7 +1,10 @@
 # Docker build for Oracle Database 18c Express Edition (XE)
+   
+   
+  
 
 <!-- TOC depthFrom:2 -->
-
+- [OPA specific](#OPA-specific)
 - [Prerequisites](#prerequisites)
 - [Build Image](#build-image)
 - [Run Container](#run-container)
@@ -17,6 +20,28 @@
 - [Docker Developers](#docker-developers)
 
 <!-- /TOC -->
+
+## OPA specific modifications
+
+This is a fork from https://github.com/fuzziebrain/docker-oracle-xe with the following modifications:
+
+- Supports user/schema creation via environment variables:
+   - ORACLE_USER   
+   - ORACLE_PASSWORD
+- Supports database initialization via shell/sql scripts in /docker-entrypoint-initdb.d 
+- Opens port 4444 once DB is up and initialized. 
+This can be used for implementing a wait-for-it style Docker service dependency health check:
+```
+timeout 3600 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 5; done' oracle-container-name 4444 || echo "== Oracle still not ready, giving up =="
+```
+
+After making any changes, you can build the image and push it to our quay.io repo:
+
+```
+docker build -t quay.io/tike/oracle:xe18c . 
+docker login -u="tike+opadev_ci" -p="<password>" https://quay.io
+docker push quay.io/tike/oracle:xe18c 
+```
 
 ## Prerequisites
 

@@ -4,7 +4,7 @@ LABEL MAINTAINER="Adrian Png <adrian.png@fuzziebrain.com>"
 ENV \
   # The only environment variable that should be changed!
   ORACLE_PASSWORD=Oracle18 \
-  EM_GLOBAL_ACCESS_YN=Y \
+  EM_GLOBAL_ACCESS_YN=N \
   # DO NOT CHANGE 
   ORACLE_DOCKER_INSTALL=true \
   ORACLE_SID=XE \
@@ -22,6 +22,8 @@ COPY ./files/${ORACLE_XE_RPM} /tmp/
 
 RUN yum install -y oracle-database-preinstall-18c && \
   yum install -y /tmp/${ORACLE_XE_RPM} && \
+  # nmap rovides nc
+  yum install nmap -y nmap && \
   rm -rf /tmp/${ORACLE_XE_RPM}
 
 COPY ./scripts/*.sh ${ORACLE_BASE}/scripts/
@@ -30,7 +32,8 @@ RUN chmod a+x ${ORACLE_BASE}/scripts/*.sh
 
 # 1521: Oracle listener
 # 5500: Oracle Enterprise Manager (EM) Express listener.
-EXPOSE 1521 5500
+# 4444: Oracle ready indicator
+EXPOSE 1521 5500 4444
 
 VOLUME [ "${ORACLE_BASE}/oradata" ]
 

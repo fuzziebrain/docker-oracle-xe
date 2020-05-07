@@ -144,27 +144,18 @@ else
    
 fi;
 
-# Check whether database is up and running
-# $ORACLE_BASE/scripts/$CHECK_DB_FILE
-# if [ $? -eq 0 ]; then
-#   echo "#########################"
-#   echo "DATABASE IS READY TO USE!"
-#   echo "#########################"
-  
-# else
-#   echo "#####################################"
-#   echo "########### E R R O R ###############"
-#   echo "DATABASE SETUP WAS NOT SUCCESSFUL!"
-#   echo "Please check output for further info!"
-#   echo "########### E R R O R ###############" 
-#   echo "#####################################"
-# fi;
+# Wait that database is up and then run possible init scripts
+dir=`dirname $0`
+$dir/waitAndInit.sh
 
 # Tail on alert log and wait (otherwise container will exit)
 echo "The following output is now a tail of the alert.log:"
 tail -f ${ORACLE_BASE}/diag/rdbms/*/*/trace/alert*.log &
-childPID=$!
-wait ${childPID}
 
-# TODO workaround
-tail -f /dev/null
+echo "====================="
+echo "== Oracle ready ====="
+echo "====================="
+
+# Open a port to indicate the database is ready.
+# Keep listening so container does not exit.
+nc -k -l 4444 > /dev/null
