@@ -22,6 +22,7 @@ COPY ./files/${ORACLE_XE_RPM} /tmp/
 
 RUN yum install -y oracle-database-preinstall-18c && \
   yum install -y /tmp/${ORACLE_XE_RPM} && \
+  sed -i 's#CHARSET=AL32UTF8##' /etc/sysconfig/oracle-xe-18c.conf && \
   rm -rf /tmp/${ORACLE_XE_RPM}
 
 COPY ./scripts/*.sh ${ORACLE_BASE}/scripts/
