@@ -20,8 +20,6 @@
 
 ## Prerequisites
 
-1. [Download](https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html) the RPM from Oracle Technology Network and save to folder. We will assume it is in `~/Downloads/oracle-database-xe-18c-1.0-1.x86_64.rpm`.
-
 1. _Optional:_ Setup docker network: `docker network create oracle_network`. This is useful if you want other containers to connect to your database (ORDS for example). You can change `oracle_network` for any name you want, however this name will be used in all the code snippets below. 
 
 1. _Optional:_ Create a folder `mkdir ~/docker/oracle-xe` which will store your Oracle XE data to be preserved after the container is destroyed.
@@ -34,9 +32,6 @@ git clone git@github.com:fuzziebrain/docker-oracle-xe.git
 
 -- Set the working directory to the project folder
 cd docker-oracle-xe
-
--- Copy the RPM to docker-odb18c-xe/files
-cp ~/Downloads/oracle-database-xe-18c-1.0-1.x86_64.rpm files/
 
 -- Build Image
 docker build -t oracle-xe:18c .
@@ -53,6 +48,7 @@ docker run -d \
   --name=oracle-xe \
   --volume ~/docker/oracle-xe:/opt/oracle/oradata \
   --network=oracle_network \
+  --env CHARSET=<used Character set>
   oracle-xe:18c
   
 # As this takes a long time to run you can keep track of the initial installation by running:
@@ -68,6 +64,7 @@ Name | Required | Description
 `--name` | Optional | Name of container. Optional but recommended
 `--volume /opt/oracle/oradata` | Optional | (recommended) If provided, data files will be stored here. If the container is destroyed can easily rebuild container using the data files.
 `--network` | Optional | If other containers need to connect to this one (ex: [ORDS](https://github.com/martindsouza/docker-ords)) then they should all be on the same docker network.
+`--env CHARSET=<value>` | Required | Define the used character set of the CDB and all PDB e.g. WE8ISO8859P1 or AL32UTF8. Skip this parameter will use standard US7ASCII character set so you can perform a "Character Set Migration" after the database is up and running (see Oracle documentation).
 `oracle-xe:18c` | Required | This is the `name:tag` of the docker image that was built in the previous step
 
 ## Container Commands
