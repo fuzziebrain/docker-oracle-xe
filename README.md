@@ -1,5 +1,9 @@
 # Docker build for Oracle Database 18c Express Edition (XE)
 
+> **IMPORTANT**
+
+> This project is now obsolete with the release of version 21c. I have a temporary project to support the new release that you can find [here](https://github.com/fuzziebrain/docker-oracledb21c-xe). This is based on the [official Docker files](https://github.com/oracle/docker-images/tree/main/OracleDatabase/SingleInstance) from Oracle. I strongly recommend tracking the latter. 
+
 <!-- TOC depthFrom:2 -->
 
 - [Prerequisites](#prerequisites)
