@@ -16,13 +16,16 @@ ENV \
   EM_REMOTE_ACCESS=enableEmRemoteAccess.sh \
   EM_RESTORE=reconfigureEm.sh \
   ORACLE_XE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm \
+  ORACLE_PRE_RPM=oracle-database-preinstall-18c-1.0-1.el7.x86_64.rpm \
   CHECK_DB_FILE=checkDBStatus.sh
-    
-COPY ./files/${ORACLE_XE_RPM} /tmp/
 
-RUN yum install -y oracle-database-preinstall-18c && \
+RUN yum install -y wget && \
+  cd /tmp && wget --report-speed=bits https://download.oracle.com/otn-pub/otn_software/db-express/${ORACLE_XE_RPM} && \
+  curl -o /tmp/oracle-database-preinstall-18c-1.0-1.el7.x86_64.rpm https://yum.oracle.com/repo/OracleLinux/OL7/latest/x86_64/getPackage/${ORACLE_PRE_RPM} && \
+  yum install -y /tmp/${ORACLE_PRE_RPM} && \
   yum install -y /tmp/${ORACLE_XE_RPM} && \
-  rm -rf /tmp/${ORACLE_XE_RPM}
+  sed -i 's#CHARSET=AL32UTF8##' /etc/sysconfig/oracle-xe-18c.conf && \
+  rm -f /tmp/*.rpm
 
 COPY ./scripts/*.sh ${ORACLE_BASE}/scripts/
 
