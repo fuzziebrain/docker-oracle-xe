@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+
+    oracle-xe:
+        build:
+            context: ./
+        image: oracle-xe:18c
+        ports:
+            - "32118:1521"
+            - "35518:5500"
+        volumes:
+            - oracle-xe-volume:/opt/oracle/oradata
+
+
+networks:
+    default:
+        name: "oracle_network"
+
+volumes:
+    oracle-xe-volume: {}
